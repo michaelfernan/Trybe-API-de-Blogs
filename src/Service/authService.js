@@ -1,21 +1,20 @@
-// src/services/authService.js
 const jwt = require('jsonwebtoken');
-const User = require('../models');
+const User = require('../models/index'); 
 
 const login = async (email, password) => {
-  try {
-    const user = await User.findOne({ where: { email } });
+  const user = await User.findOne({ where: { email } });
 
-    if (!user || user.password !== password) {
-      return { token: null, userExists: !!user };
-    }
-
-    const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: '1h' });
-    return { token, userExists: true };
-  } catch (error) {
-    console.error('Error in authService:', error);
-    throw new Error('Error processing login');
+  if (!user || user.password !== password) {
+    return null; 
   }
+
+  const { JWT_SECRET } = process.env;
+  if (!JWT_SECRET) {
+    throw new Error('JWT_SECRET is not defined');
+  }
+
+  const token = jwt.sign({ id: user.id, email: user.email }, JWT_SECRET, { expiresIn: '1h' });
+  return token;
 };
 
 module.exports = {
