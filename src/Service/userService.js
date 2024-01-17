@@ -3,11 +3,12 @@ const { User } = require('../models');
 const generateToken = require('../helpers/tokenHelper');
 
 const userService = {
-  userExists(email) {
+  
+  async userExists(email) {
     return User.findOne({ where: { email } });
   },
 
-  createUserInDB(userData) {
+  async createUserInDB(userData) {
     return User.create({
       displayName: userData.displayName,
       email: userData.email,
@@ -32,7 +33,19 @@ const userService = {
 
       return { token };
     } catch (error) {
-      console.error(error);
+      console.error('Error in createUser:', error);
+      return { error: 'Internal server error' };
+    }
+  },
+
+  async getAllUsers() {
+    try {
+      const users = await User.findAll({
+        attributes: { exclude: ['password'] },
+      });
+      return users;
+    } catch (error) {
+      console.error('Error in getAllUsers:', error);
       return { error: 'Internal server error' };
     }
   },
