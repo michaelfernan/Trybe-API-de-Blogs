@@ -3,11 +3,9 @@ const { User } = require('../models');
 const generateToken = require('../helpers/tokenHelper');
 
 const userService = {
-  
   async userExists(email) {
     return User.findOne({ where: { email } });
   },
-
   async createUserInDB(userData) {
     return User.create({
       displayName: userData.displayName,
@@ -16,26 +14,21 @@ const userService = {
       image: userData.image,
     });
   },
-
   async createUser(userData) {
     try {
       if (await this.userExists(userData.email)) {
         return { error: 'User already registered' };
       }
-
       const newUser = await this.createUserInDB(userData);
-
       if (!newUser) {
         return { error: 'Error creating user' };
       }
-
       const token = generateToken(newUser.id);
-
       return { token };
     } catch (error) {
       console.error('Error in createUser:', error);
       return { error: 'Internal server error' };
-    }
+    } 
   },
 
   async getAllUsers() {
@@ -46,6 +39,20 @@ const userService = {
       return users;
     } catch (error) {
       console.error('Error in getAllUsers:', error);
+      return { error: 'Internal server error' };
+    } 
+  },
+  async getUserById(id) {
+    try {
+      const user = await User.findByPk(id, {
+        attributes: ['id', 'displayName', 'email', 'image'],
+      });
+  
+      if (!user) {
+        return { error: 'User does not exist' };
+      } return user;
+    } catch (error) {
+      console.error('Error in getUserById:', error);
       return { error: 'Internal server error' };
     }
   },

@@ -32,5 +32,24 @@ async function getAllUsers(req, res) {
     return res.status(500).json({ message: 'Internal server error' });
   }
 }
+async function getUserById(req, res) {
+  const { id } = req.params;
+  if (isNaN(id)) {
+    return res.status(400).json({ message: 'Invalid ID' });
+  }
 
-module.exports = { createUser, getAllUsers };
+  try {
+    const user = await userService.getUserById(id);
+
+    if (user.error) {
+      return res
+        .status(user.error === 'User does not exist' ? 404 : 500).json({ message: user.error });
+    }
+
+    return res.status(200).json(user);
+  } catch (error) {
+    return res.status(500).json({ message: 'Internal server error' });
+  }
+}
+
+module.exports = { createUser, getAllUsers, getUserById };
