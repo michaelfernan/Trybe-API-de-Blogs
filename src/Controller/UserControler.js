@@ -1,5 +1,5 @@
 const userService = require('../Service/userService');
-const { validateUserData } = require('./validation'); // Importing validation functions
+const { validateUserData } = require('./validation'); 
 
 async function createUser(req, res) {
   try {
@@ -34,7 +34,7 @@ async function getAllUsers(req, res) {
 }
 async function getUserById(req, res) {
   const { id } = req.params;
-  if (isNaN(id)) {
+  if (Number.isNaN(Number(id))) {
     return res.status(400).json({ message: 'Invalid ID' });
   }
 
