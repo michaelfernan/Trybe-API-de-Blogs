@@ -13,6 +13,7 @@ const getTokenFromHeader = (authHeader) => {
 
 const verifyToken = (token) => {
   try {
+    // @ts-ignore
     jwt.verify(token, process.env.JWT_SECRET);
     return jwt.decode(token);
   } catch (error) {
