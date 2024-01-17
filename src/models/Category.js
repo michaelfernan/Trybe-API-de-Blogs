@@ -14,7 +14,7 @@ module.exports = (sequelize, DataTypes) => {
     },
   }, {
     tableName: 'categories',
-    timestamps: false, // Se não houver colunas de timestamp como createdAt e updatedAt
+    timestamps: false,
   });
 
   return Category;
