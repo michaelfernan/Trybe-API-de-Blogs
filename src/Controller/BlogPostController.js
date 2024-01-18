@@ -43,8 +43,11 @@ exports.updatepost = async (req, res) => {
     const userId = req.user.id;
     const post = req.body;
     const result = await BlogPostService.updatePost(post, id, userId);
-    if (result.message) return res.staus(401).json(result);
-    return res.status(201).json(result);
+    if (result.post) {
+      res.status(result.status).json(result.post);
+    } else {
+      res.status(result.status).json({ message: result.message });
+    }
   } catch (err) {
     return res.status(500).json({ message: err.message });
   }
