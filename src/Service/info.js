@@ -1,5 +1,5 @@
 // @ts-ignore
-const { Category, User, BlogPost, PostCategory } = require('../models');
+const { Category, User, BlogPost } = require('../models');
 
 const info = [
   {
