@@ -1,36 +1,46 @@
 module.exports = (sequelize, DataTypes) => {
-    const PostCategory = sequelize.define('PostCategory', {
-      postId: {
-        type: DataTypes.INTEGER,
-        primaryKey: true,
-      },
-      categoryId: {
-        type: DataTypes.INTEGER,
-        primaryKey: true,
-      },
-    }, {
-      timestamps: false,
+
+  const PostCategory = sequelize.define('PostCategory', {
+    categoryId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      foreignKey: true,
+      primaryKey: true,
+    },
+    postId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      foreignKey: true,
+      primaryKey: true,
+    },
+  },
+    {
+      tableName: 'posts_categories',
       underscored: true,
-      modelName: 'PostCategory',
-      tableName: 'post_categories', 
+      timestamps: false
     });
-  
-    PostCategory.associate = (models) => {
-        models.Category.belongsToMany(models.BlogPost, {
-          as: 'blog_posts_e_category',
-          foreignKey: 'category_e_id',
-          through: PostCategory,
-          otherKey: 'post_e_id',
-        });
-        models.BlogPost.belongsToMany(models.Category, {
-          as: 'categories_e_post',
-          foreignKey: 'post_e_id',
-          through: PostCategory,
-          otherKey: 'category_e_id',
-        });
-      };
-  
-  
-    return PostCategory;
+
+
+  PostCategory.associate = (models) => {
+
+    models.BlogPost.belongsToMany(models.Category, {
+      as: 'categories',
+      foreignKey: 'postId',
+      otherKey: 'categoryId',
+      onDelete: 'CASCADE',
+      onUpdate: 'CASCADE',
+      through: PostCategory,
+    });
+
+    models.Category.belongsToMany(models.BlogPost, { 
+      as: 'posts',
+      foreignKey: 'categoryId',
+      otherKey: 'postId',
+      onDelete: 'CASCADE',
+      onUpdate: 'CASCADE',
+      through: PostCategory,
+    });
   };
-  
+
+  return PostCategory;
+};
